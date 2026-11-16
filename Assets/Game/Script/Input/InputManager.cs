@@ -68,4 +68,43 @@ public class InputManager : MonoBehaviour, IPlayerActions
         }
     }
 
+    public UnityEvent<bool> OnCrouchInput;
+    public void OnCrouch(InputAction.CallbackContext context)
+    {
+        // Mengecek apakah input ditekan 
+        if (context.performed)
+        {
+            // Jika input ditekan maka trigger event OnSprintInput 
+            // Mengirim data true 
+            OnCrouchInput?.Invoke(true);
+            Debug.Log("Crouch Press");
+        }
+        // Mengecek apakah input dilepas 
+        if (context.canceled)
+        {
+            // Jika input dilepas maka trigger event OnSprintInput 
+            // Mengirim data false 
+            OnCrouchInput?.Invoke(false);
+            Debug.Log("Crouch Not Press");
+        }
+    }
+
+    public UnityEvent<bool> OnJumpInput;
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        // Mengecek apakah input ditekan 
+        if (context.performed)
+        {
+            // Jika input ditekan maka trigger event OnSprintInput 
+            // Mengirim data true 
+            OnJumpInput?.Invoke(true);
+        }
+        // Mengecek apakah input dilepas 
+        if (context.canceled)
+        {
+            // Jika input dilepas maka trigger event OnSprintInput 
+            // Mengirim data false 
+            OnJumpInput?.Invoke(false);
+        }
+    }
 }

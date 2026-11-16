@@ -5,6 +5,10 @@ using UnityEngine.InputSystem;
 public class PlayerCharacterMovement : MonoBehaviour
 {
     private bool _isSprint;
+    private bool _isCrouch;
+    private bool _isJump;
+
+    private float time = 2;
     public bool IsSprint => _isSprint;
     private float _currentSpeed = 1f;
     // Membuat variable untuk menyimpan arah dan kecepatan gerakkan character 
@@ -14,10 +18,16 @@ public class PlayerCharacterMovement : MonoBehaviour
     private CharacterController _characterController;
 
     [SerializeField]
-    private float _gravityScale = 1;
+    private float _gravityScale = 0.00002f;
+
+    [SerializeField]
+    private float _jumpSpeed = 1;
 
     [SerializeField]
     private float _walkSpeed = 1;
+
+    [SerializeField]
+    private float _crouchSpeed = 0.5f;
     // Membuat variable untuk menentukan kecepatan saat berlari 
     [SerializeField]
     private float _sprintSpeed = 2;
@@ -30,7 +40,18 @@ public class PlayerCharacterMovement : MonoBehaviour
 
     public void SetSprint(bool isSprint)
     {
+        Debug.Log("set sprint");
         _isSprint = isSprint;
+    }
+
+    public void SetCrouch(bool isCrouch)
+    {
+        Debug.Log("set crouch: " + isCrouch);
+        _isCrouch = isCrouch;
+    }
+    public void SetJump(bool isJump)
+    {
+        _isJump = isJump;
     }
 
     private void CheckIsGrounded()
@@ -43,7 +64,8 @@ public class PlayerCharacterMovement : MonoBehaviour
         // Layer object yang dicek adalah layer ground 
         // Jika terdeteksi _isGrounded bernilai true,  
         // jika tidak _isGrounded bernilai false 
-        _isGrounded = Physics.CheckSphere(transform.position, 0.5f, groundLayer);
+        _isGrounded = Physics.CheckSphere(transform.position, 1.1f, groundLayer);
+        Debug.Log("ground layer = " + _isGrounded);
     }
 
     // Membuat variable untuk menyimpan data gerakkan arah gerakan character 
@@ -61,6 +83,16 @@ public class PlayerCharacterMovement : MonoBehaviour
     private void CalculateVelocityY()
     {
         // Menghitung kecepatan gerakan charater di sumbu y 
+        time = time - Time.deltaTime;
+        if(_isGrounded == true && _isJump)
+        {
+            _velocityY = _jumpSpeed;
+        }
+        if(time < 0)
+        {
+            time = 0;
+        }
+        Debug.Log("Velocity speed = " + _velocityY);
         _velocityY = _velocityY + Physics.gravity.y * _gravityScale * Time.deltaTime;
     }
 
@@ -124,8 +156,15 @@ public class PlayerCharacterMovement : MonoBehaviour
                 _currentSpeed = _currentSpeed - _acceleration * Time.deltaTime;
             }
             // Membatasi kecepatan, minimum: walk speed maksimum: sprint speed  
-            _currentSpeed = Mathf.Clamp(_currentSpeed, _walkSpeed, _sprintSpeed);
-            Debug.Log(_currentSpeed);
+            if (_isCrouch)
+            {
+                _currentSpeed = _crouchSpeed;
+                Debug.Log(_crouchSpeed + "sajhahjhk");
+            } else
+            {
+                _currentSpeed = Mathf.Clamp(_currentSpeed, _walkSpeed, _sprintSpeed);
+            }
+                Debug.Log("Current sprint : " + _isSprint + "Current crouch : " + _isCrouch + "Current Speed: " + _currentSpeed);
         }
         else
         {

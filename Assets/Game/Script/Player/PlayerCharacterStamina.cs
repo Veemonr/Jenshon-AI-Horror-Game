@@ -53,7 +53,6 @@ public class PlayerCharacterStamina : MonoBehaviour
         }
         // Membatasi stamina player, minimum: 0; maksimum: maximum stamina  
         _currentStamina = Mathf.Clamp(_currentStamina, 0, _maxStamina);
-        Debug.Log("Current Stamina = " + _currentStamina);
     }
 
     private void Update()
